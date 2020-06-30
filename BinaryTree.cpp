@@ -5,27 +5,11 @@
 typedef struct tree
 {
 	struct tree *parent;
-	struct tree *left_child;
-	struct tree *right_child;
+	struct tree *left;
+	struct tree *right;
 	int key;
 } node;
 
-node *busca (node *root, int key)
-{
-	node *aux = root;
-
-	while (aux != NULL) 
-	{
-		if ((*aux).key == key) {		
-			return aux;
-		} else if (key < (*aux).key) {
-			aux = (*aux).left_child;
-		} else {
-			aux = (*aux).right_child;
-		}
-	}
-	return NULL;
-}
 
 node *inserir (node *root, int key) 
 {
@@ -34,17 +18,17 @@ node *inserir (node *root, int key)
 	if (root == NULL) {
 		root = (node*) malloc (sizeof(node));
 		(*root).key = key;
-		(*root).parent = (*root).left_child = (*root).right_child = NULL;
+		(*root).parent = (*root).left = (*root).right = NULL;
 	}
 
 	else { 
 		if (key <= (*root).key) {
-			aux = inserir ((*root).left_child, key);
-			(*root).left_child = aux;
+			aux = inserir ((*root).left, key);
+			(*root).left = aux;
 			(*aux).parent = root;
 		} else {
-			aux = inserir ((*root).right_child, key);
-			(*root).right_child = aux;
+			aux = inserir ((*root).right, key);
+			(*root).right = aux;
 			(*aux).parent = root;
 		}
 	}
@@ -55,9 +39,9 @@ node *inserir (node *root, int key)
 void imprimir (node *root)
 {
 	if (root != NULL) {
-		imprimir ((*root).left_child);
+		imprimir ((*root).left);
 		printf("%d  ", (*root).key);
-		imprimir ((*root).right_child);
+		imprimir ((*root).right);
 	}
 }
 
@@ -67,10 +51,10 @@ node *minimo (node *root)
 
 	while (aux != NULL)
 	{
-		if ((*aux).left_child == NULL) {
+		if ((*aux).left == NULL) {
 			break;
 		} else {
-			aux = (*aux).left_child;
+			aux = (*aux).left;
 		}
 	}
 	return aux;
@@ -82,13 +66,32 @@ node *maximo (node *root)
 
 	while (aux != NULL)
 	{
-		if ((*aux).right_child == NULL) {
+		if ((*aux).right == NULL) {
 			break;
 		} else {
-			aux = (*aux).right_child;
+			aux = (*aux).right;
 		}
 	}
 	return aux;
+}
+
+node *altura (node *root) {
+   if (root == NULL){
+      printf("Vazio\n"); // altura da Ã¡rvore vazia
+	}
+	else if(root != NULL){
+		printf("chegou");
+      tree *he = altura (root->left);
+      tree *hd = altura (root->right);
+       
+      	if (he < hd){
+      		printf("%d", he);
+	  	}
+	  	else{
+	  		printf("%d", hd);
+	  	}
+   }
+   return(0);
 }
 
 
@@ -100,6 +103,7 @@ int main(void)
 	node *minimo (node *root);
 	node *maximo (node *root);
 	void imprimir (node *root);
+	int altura (node *root);
 
 	node *root, *aux;
 	root = NULL;
@@ -108,9 +112,10 @@ int main(void)
 	mainMenu: 
 		printf ("===========MENU===========\n");
 		printf ("1 - Inserir\n"); 
-		printf ("2 - Mínimo\n");
-		printf ("3 - Máximo\n");
+		printf ("2 - MÃ­nimo\n");
+		printf ("3 - MÃ¡ximo\n");
 		printf ("4 - Imprimir\n");
+		printf ("5 - Altura\n");
 		printf ("0 - Sair\n");
 		printf ("==========================\n");
 		scanf ("%d", &opt);
@@ -139,6 +144,9 @@ int main(void)
 				imprimir (root);
 				printf("\n");
 				break;
+				
+			case 5:
+				altura(root);
 		}    		
 	while (opt != 0){
 		goto mainMenu;
